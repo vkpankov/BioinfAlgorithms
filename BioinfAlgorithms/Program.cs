@@ -27,6 +27,13 @@ namespace BioinfAlgorithms
             Console.WriteLine(alignment);
 
             Console.WriteLine("");
+            Console.WriteLine("Дополнительный тест (gap=-0.499, mismatch=-1):");
+            ndm.MismatchPenalty = -1;
+            ndm.GapPenalty = -0.499;
+            alignment = ndm.CalcAlignment("CGAGAGGAGCGATATTTAGAGTGTGTAGCGAGAGCTCGATCGCTAGCTAGG", "GGGGATAGCTAGTTCGAGATCGATCGAGATCTT");
+            Console.WriteLine(alignment);
+
+            Console.WriteLine("");
             Console.WriteLine("Глобальное выравнивание с матрицей весов:");
             ndm.SimilarityMatrix = new double[,] {
                      {10,-1,-3,-4 },

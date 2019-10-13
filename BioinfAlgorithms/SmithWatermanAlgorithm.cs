@@ -118,7 +118,7 @@ namespace BioinfAlgorithms
             }
 
             var alignmentResult = GetAlignmentByAncestorsMatrix(S1, S2, ancestors, M, maxScoreI, maxScoreJ);
-            alignmentResult.Score = M[S1.Length - 1, S2.Length - 1];
+            alignmentResult.Score = maxScore;
             return alignmentResult;
         }
 
