@@ -23,7 +23,7 @@ namespace BioinfAlgorithms
 
             AlignmentResult result = new AlignmentResult();
 
-            while (k >= 0 && l >= 0)
+            while (k > 0 && l > 0)
             {
                 if (ancestors[k, l] == 0)
                 {
@@ -46,15 +46,15 @@ namespace BioinfAlgorithms
                 }
 
             }
-            if (l > 0)
+            if (k >= 0)
             {
-                result.S1 = new string('-', l) + result.S1;
-                result.S2 = S2.Substring(0, l) + result.S2;
+                result.S1 = S1.Substring(0, k + 1) + result.S1;
+                result.S2 = new string('-', k + 1) + result.S2;
             }
-            if (k > 0)
+            if (l >= 0)
             {
-                result.S1 = S1.Substring(0, k) + result.S1;
-                result.S2 = new string('-', k) + result.S2;
+                result.S1 = new string('-', l + 1) + result.S1;
+                result.S2 = S2.Substring(0, l + 1) + result.S2;
             }
             return result;
             
