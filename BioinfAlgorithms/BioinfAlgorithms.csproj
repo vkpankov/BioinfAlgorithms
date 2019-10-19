@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlignmentResult.cs" />
+    <Compile Include="AffinityGapsAlignment.cs" />
     <Compile Include="NeedlemanWunschAlgorithm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
