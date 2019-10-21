@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace BioinfAlgorithms
 {
-    public class AffinityGapsAlignment
+    public partial class AffineGapsAlignment
     {
-
-        enum StepType { M, Gaps1, Gaps2}
 
         public double[,] SimilarityMatrix { get; set; }
 
@@ -22,37 +20,39 @@ namespace BioinfAlgorithms
         private AlignmentResult GetAlignmentByAncestorsMatrix(string S1, string S2, StepType[,] pointersM, StepType[,] pointersGaps1,
             StepType[,] pointersGaps2, StepType startStep)
         {
-            int k = S1.Length - 1;
-            int l = S2.Length - 1;
+            int k = S1.Length;
+            int l = S2.Length;
 
             AlignmentResult result = new AlignmentResult();
 
             StepType curStep = startStep;
-            pointersM[S1.Length - 1, S2.Length - 1] = StepType.M;
-            while (k > 0 && l > 0)
+
+            while (k > 0 || l > 0)
             {
-                if (curStep == StepType.M && k>0&&l>0)
+                if (curStep == StepType.M && k >= 0 && l >= 0)
                 {
-                    result.S1 = S1[k] + result.S1;
-                    result.S2 = S2[l] + result.S2;
+                    result.S1 = S1[k-1] + result.S1;
+                    result.S2 = S2[l-1] + result.S2;
+                    curStep = pointersM[k, l];
                     k--;
                     l--;
-                    curStep = pointersM[k, l];
                 }
                 else
-                if(k>0 && curStep == StepType.Gaps1)
+                if ((k > 0 && curStep == StepType.Gaps2)||(k>0 && l<=0))
                 {
-                    result.S1 = S1[k] + result.S1;
+                    result.S1 = S1[k-1] + result.S1;
                     result.S2 = "-" + result.S2;
+                    curStep = pointersGaps2[k, Math.Max(0,l)];
                     k--;
-                    curStep = pointersGaps1[k, l];
+
                 }
-                else if(l>0)
+                else if ((l > 0 && curStep == StepType.Gaps1)||(l>0&&k<=0))
                 {
                     result.S1 = "-" + result.S1;
-                    result.S2 = S2[l] + result.S2;
+                    result.S2 = S2[l-1] + result.S2;
+                    curStep = pointersGaps1[Math.Max(k,0), l];
                     l--;
-                    curStep = pointersGaps2[k, l];
+
                 }
             }
             return result;
@@ -61,37 +61,37 @@ namespace BioinfAlgorithms
 
         public AlignmentResult CalcAlignment(string S1, string S2)
         {
-            double[,] M = new double[S1.Length, S2.Length];
-            double[,] Gaps1 = new double[S1.Length, S2.Length];
-            double[,] Gaps2 = new double[S1.Length, S2.Length];
+            double[,] M = new double[S1.Length + 1, S2.Length + 1];
+            double[,] Gaps1 = new double[S1.Length + 1, S2.Length + 1];
+            double[,] Gaps2 = new double[S1.Length + 1, S2.Length + 1];
 
-            StepType[,] MPointers = new StepType[S1.Length, S2.Length]; //0
-            StepType[,] Gaps1Pointers = new StepType[S1.Length, S2.Length]; //1
-            StepType[,] Gaps2Pointers = new StepType[S1.Length, S2.Length]; //2
+            StepType[,] MPointers = new StepType[S1.Length + 1, S2.Length + 1]; //0
+            StepType[,] Gaps1Pointers = new StepType[S1.Length + 1, S2.Length + 1]; //1
+            StepType[,] Gaps2Pointers = new StepType[S1.Length + 1, S2.Length + 1]; //2
 
 
-            for (int i = 1; i < S1.Length; i++)
+            for (int i = 1; i <= S1.Length; i++)
                 M[i, 0] = double.NegativeInfinity;
-            for (int j = 1; j < S2.Length; j++)
+            for (int j = 1; j <= S2.Length; j++)
                 M[0, j] = double.NegativeInfinity;
 
 
-            for (int i = 0; i < S1.Length; i++)
+            for (int i = 0; i <= S1.Length; i++)
             {
                 Gaps1[i, 0] = GapOpenPenalty + i * GapPenalty;
                 Gaps2[i, 0] = double.NegativeInfinity;
             }
 
-            for (int i = 0; i < S2.Length; i++)
+            for (int i = 0; i <= S2.Length; i++)
             {
                 Gaps1[0, i] = double.NegativeInfinity;
                 Gaps2[0, i] = GapOpenPenalty + i * GapPenalty;
 
             }
 
-            for (int i = 1; i < S1.Length; i++)
+            for (int i = 1; i <= S1.Length; i++)
             {
-                for (int j = 1; j < S2.Length; j++)
+                for (int j = 1; j <= S2.Length; j++)
                 {
 
                     double score1 = 0;
@@ -101,11 +101,11 @@ namespace BioinfAlgorithms
                     double pairMatch;
                     if (SimilarityMatrix != null)
                     {
-                        pairMatch = SimilarityMatrix[LetterIndexPairs[S1[i]], LetterIndexPairs[S2[j]]];
+                        pairMatch = SimilarityMatrix[LetterIndexPairs[S1[i-1]], LetterIndexPairs[S2[j-1]]];
                     }
                     else
                     {
-                        pairMatch = (S1[i] == S2[j] ? 1 : MismatchPenalty);
+                        pairMatch = (S1[i-1] == S2[j-1] ? 1 : MismatchPenalty);
                     }
                     score1 = M[i - 1, j - 1] + pairMatch;
                     score2 = Gaps1[i - 1, j - 1] + pairMatch;
@@ -182,9 +182,9 @@ namespace BioinfAlgorithms
                 }
             }
 
-            double s1 = Gaps1[S1.Length - 1, S2.Length - 1];
-            double s2 = Gaps2[S1.Length - 1, S2.Length - 1];
-            double s3 = M[S1.Length - 1, S2.Length - 1];
+            double s1 = Gaps1[S1.Length, S2.Length];
+            double s2 = Gaps2[S1.Length, S2.Length];
+            double s3 = M[S1.Length, S2.Length];
             double maxScore = 0;
 
             var stepType = StepType.M;
@@ -206,8 +206,6 @@ namespace BioinfAlgorithms
             }
 
             var alignmentResult = GetAlignmentByAncestorsMatrix(S1, S2, MPointers, Gaps1Pointers, Gaps2Pointers, stepType);
-
- 
             alignmentResult.Score = maxScore;
             return alignmentResult;
         }
