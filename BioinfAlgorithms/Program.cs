@@ -10,33 +10,39 @@ namespace BioinfAlgorithms
 {
     class Program
     {
+
+        public static void Print2DArray<T>(T[,] matrix)
+        {
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write(matrix[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+        }
         static void Main(string[] args)
         {
-
-            string affGapTS1 = "TCCCAGTTATGTCAGGGGACACGAGCATGCAGAGAC";
-            string affGapTS2 = "AATTGCCGCCGTCGTTTTCAGCAGTTATGTCAGATC";
-
-            var ag = new AffineGapsAlignment();
-            Console.WriteLine("Тест 1 (gap=-1, mismatch=-1, open gap = 0):");
-            ag.MismatchPenalty = -5;
-            ag.GapPenalty = -1;
-             ag.GapOpenPenalty = 0;
-            var al = ag.CalcAlignment(affGapTS1, affGapTS2);
-            Console.WriteLine(al);
-
-            Console.WriteLine("Тест 2 (gap=-0.01, mismatch=-1, open gap = -100):");
-            ag.MismatchPenalty = -1;
-            ag.GapPenalty = -0.01;
-            ag.GapOpenPenalty = -100;
-            Console.WriteLine(ag.CalcAlignment(affGapTS1, affGapTS2));
-
-
-            Console.WriteLine("Тест 3 (gap=-0.3, mismatch=-1, open gap = 0.5):");
-            ag.MismatchPenalty = -1;
-            ag.GapPenalty = -0.3;
-            ag.GapOpenPenalty = 0.5;
-            Console.WriteLine(ag.CalcAlignment(affGapTS1, affGapTS2));
-
+            string rnaStr = "GGACC";
+            var rnaFolding = new RNAFolding();
+            rnaFolding.StemLoopMinLength = 3;
+            var m = rnaFolding.FoldRNA(rnaStr);
+            int score = m[0, rnaStr.Length - 1];
+            string pairs = rnaFolding.Traceback(rnaStr, m);
+            Console.WriteLine("Тест 1: ");
+            Console.WriteLine("Число спаренных оснований: " + score);
+            Console.WriteLine(pairs);
+            Console.WriteLine(rnaStr);
+            Console.WriteLine("");
+            rnaStr = "AAACAUGAGGAUUACCCAUGU";
+            m = rnaFolding.FoldRNA(rnaStr);
+            score = m[0, rnaStr.Length - 1];
+            pairs = rnaFolding.Traceback(rnaStr, m);
+            Console.WriteLine("Тест 2: ");
+            Console.WriteLine("Число спаренных оснований: " + score);
+            Console.WriteLine(pairs);
+            Console.WriteLine(rnaStr);
 
             Console.ReadKey();
         }

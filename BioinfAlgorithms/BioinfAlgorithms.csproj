@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>BioinfAlgorithms</RootNamespace>
     <AssemblyName>BioinfAlgorithms</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,6 +49,7 @@
     <Compile Include="NeedlemanWunschAlgorithm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RNAFolding.cs" />
     <Compile Include="SmithWatermanAlgorithm.cs" />
     <Compile Include="StepType.cs" />
   </ItemGroup>
