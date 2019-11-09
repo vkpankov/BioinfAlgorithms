@@ -28,11 +28,8 @@ namespace BioinfAlgorithms.Phylogenetic
             }
             return (curI, curJ);
         }
-
-
         public static string BuildTree(Matrix<double> D, string[] objectNames, ClusteringType clusteringType)
         {
-
             var names = new List<(string name, int size)>();
             names.AddRange(objectNames.Select(x => (x, 1)));
             while (names.Count>1)
@@ -57,10 +54,6 @@ namespace BioinfAlgorithms.Phylogenetic
                         if (i != minI && i != minJ)
                             newRow[j++] = (D[minI, i] * iSize + D[minJ, i] * jSize) / (iSize + jSize);
                     }
-
-
-
-
                     D = D.RemoveRow(firstRow).RemoveColumn(firstRow)
                         .RemoveRow(secondRow).RemoveColumn(secondRow);
                     D = D.InsertRow(D.RowCount, newRow);
@@ -74,7 +67,7 @@ namespace BioinfAlgorithms.Phylogenetic
                 names.RemoveAt(secondRow);
                 names.Add(($"({nameI},{nameJ}):{ijVal / 2}", 2));
             }
-            return names.Select(x=>x.Item1).First();
+            return names.First().name;
 
         }
         
