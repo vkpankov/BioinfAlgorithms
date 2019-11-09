@@ -17,19 +17,28 @@ namespace BioinfAlgorithms
                 return false;
         }
 
-        private int GetMaxScore(string rnaSeq, int i, int j)
+        private int GetPairedMaxScore(string rnaSeq, int i, int j, int[,] matrix)
         {
             if (j <= i + StemLoopMinLength)
             {
                 return 0;
             }
-            int scoreWithoutPair = GetMaxScore(rnaSeq, i, j - 1);
+            int scoreWithoutPair = matrix[i, j - 1];
             int pairedMaxScore = 0;
             for (int t = i; t < j; t++)
             {
                 if (IsComplimentar(rnaSeq[t], rnaSeq[j]))
                 {
-                    int tMax = 1 + GetMaxScore(rnaSeq, i, t - 1) + GetMaxScore(rnaSeq, t + 1, j - 1);
+                    if (matrix[i, t] == -1)
+                        matrix[i, t] = GetPairedMaxScore(rnaSeq, i, t, matrix);
+
+                    if (matrix[t + 1, j - 1] == -1)
+                        matrix[t + 1, j - 1] = GetPairedMaxScore(rnaSeq, t + 1, j - 1, matrix);
+
+                    int tMax = 1 
+                        + matrix[i,t]
+                        + matrix[t+1,j-1];
+
                     if (tMax > pairedMaxScore)
                     {
                         pairedMaxScore = tMax;
@@ -48,9 +57,10 @@ namespace BioinfAlgorithms
             {
                 for (int j = i + StemLoopMinLength; j < n; j++)
                 {
-                    nussinovMatrix[i, j] = GetMaxScore(rnaSeq, i, j);
+                    nussinovMatrix[i, j] = -1;
                 }
             }
+            GetPairedMaxScore(rnaSeq, 0, n - 1, nussinovMatrix);
             return nussinovMatrix;
         }
 
