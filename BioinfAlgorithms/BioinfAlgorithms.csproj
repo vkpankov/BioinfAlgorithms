@@ -52,6 +52,7 @@
     <Compile Include="AlignmentResult.cs" />
     <Compile Include="AffineGapsAlignment.cs" />
     <Compile Include="NeedlemanWunschAlgorithm.cs" />
+    <Compile Include="Phylogenetics\NeighborJoiningClustering.cs" />
     <Compile Include="Phylogenetics\PGMAClustering.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

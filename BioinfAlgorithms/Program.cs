@@ -1,4 +1,5 @@
 ﻿using BioinfAlgorithms.Phylogenetic;
+using BioinfAlgorithms.Phylogenetics;
 using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace BioinfAlgorithms
                     {8,11,8,9,8,0 }
                 });
 
-            var namesWikiTest = new string[] { "A", "B", "C", "D", "E" };
+           /* var namesWikiTest = new string[] { "A", "B", "C", "D", "E" };
             var wikiTest = Matrix<double>.Build.DenseOfArray(
                 new double[,]
                 {
@@ -49,29 +50,43 @@ namespace BioinfAlgorithms
                 }
                 );
 
-            var testUPGMA =  PGMAClustering.BuildTree(test1, namesTest1, PGMAClustering.ClusteringType.UPGMA);
-            var testWPGMA = PGMAClustering.BuildTree(test1, namesTest1, PGMAClustering.ClusteringType.WPGMA);
+            var njTest = Matrix<double>.Build.DenseOfArray(
+                new double[,]
+                {
+                    {0,  5,   9,   9,   8 },
+                    {5,  0,   10,  10,  9 },
+                    {9,  10,  0,   8,   7 },
+                    {9,  10,  8,   0,   3 },
+                    {8 , 9,   7,   3,   0 }
+                });
+
+            var njTest2 = Matrix<double>.Build.DenseOfArray(
+    new double[,]
+    {
+                    {0,5,4,7,6,8 },
+                    {5,0,7,10,9,11 },
+                    {4,7,0,7,6,8 },
+                    {7,10,7,0,5,9 },
+                    {6,9,6,5,0,8 },
+                    {8,11,8,9,8,0 }
+
+    });
+    */
+
+
+
+            var test1NJ = NeighborJoiningClustering.BuildTree(test1, namesTest1);
+            var test2NJ = NeighborJoiningClustering.BuildTree(test2, namesTest2);
 
             Console.WriteLine("Тест 1:");
-            Console.WriteLine("UPGMA: "+ testUPGMA);
-            Console.WriteLine("WPGMA: " + testWPGMA);
-            Console.WriteLine("");
+            Console.WriteLine("NJ: "+ test1NJ);
 
-            testUPGMA = PGMAClustering.BuildTree(test2, namesTest2, PGMAClustering.ClusteringType.UPGMA);
-            testWPGMA = PGMAClustering.BuildTree(test2, namesTest2, PGMAClustering.ClusteringType.WPGMA);
+            Console.WriteLine("");
             Console.WriteLine("Тест 2:");
-            Console.WriteLine("UPGMA: " + testUPGMA);
-            Console.WriteLine("WPGMA: " + testWPGMA);
+            Console.WriteLine("NJ: " + test2NJ);
             Console.WriteLine("");
-
-            testUPGMA = PGMAClustering.BuildTree(wikiTest, namesWikiTest, PGMAClustering.ClusteringType.UPGMA);
-            testWPGMA = PGMAClustering.BuildTree(wikiTest, namesWikiTest, PGMAClustering.ClusteringType.WPGMA);
-            Console.WriteLine("Тест с wiki:");
-            Console.WriteLine("UPGMA: " + testUPGMA);
-            Console.WriteLine("WPGMA: " + testWPGMA);
-            Console.WriteLine("");
-
             Console.ReadKey();
+
         }
     }
 }
