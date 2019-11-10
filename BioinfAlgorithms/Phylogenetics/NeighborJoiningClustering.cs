@@ -45,8 +45,8 @@ namespace BioinfAlgorithms.Phylogenetics
         public static string BuildTree(Matrix<double> D, string[] objectNames)
         {
         
-            var names = new List<(string name, int size)>();
-            names.AddRange(objectNames.Select(x => (x, 1)));
+            var names = new List<string>();
+            names.AddRange(objectNames);
             List<double> nodeLengths = new List<double>();
             nodeLengths.AddRange(Enumerable.Repeat(0.0, D.RowCount));
 
@@ -83,13 +83,13 @@ namespace BioinfAlgorithms.Phylogenetics
                 double guDist = ijValD - fuDist;
                 
 
-                string nameI = names[minI].name;
-                string nameJ = names[minJ].name;
+                string nameI = names[minI];
+                string nameJ = names[minJ];
                 names.RemoveAt(firstRow);
                 names.RemoveAt(secondRow);
 
 
-                names.Add(($"({nameI}:{fuDist},{nameJ}:{guDist})", 2));
+                names.Add($"({nameI}:{fuDist},{nameJ}:{guDist})");
                 nodeLengths.RemoveAt(firstRow);
                 nodeLengths.RemoveAt(secondRow);
                 nodeLengths.Add(ijValQ / 2);
@@ -97,7 +97,7 @@ namespace BioinfAlgorithms.Phylogenetics
 
 
 
-            string f = names[1].name.TrimEnd(')') + "," + names[0].name + ":" + newRow[0] + ")";
+            string f = names[1].TrimEnd(')') + "," + names[0] + ":" + newRow[0] + ")";
             return f;
 
         }
