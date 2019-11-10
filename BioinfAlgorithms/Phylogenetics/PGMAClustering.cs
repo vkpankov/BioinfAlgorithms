@@ -32,6 +32,10 @@ namespace BioinfAlgorithms.Phylogenetic
         {
             var names = new List<(string name, int size)>();
             names.AddRange(objectNames.Select(x => (x, 1)));
+            List<double> nodeLengths = new List<double>();
+            nodeLengths.AddRange(Enumerable.Repeat(0.0, D.RowCount));
+            double prev1 = 0;
+            double prev2 = 0;
             while (names.Count>1)
             {
                 (int minI, int minJ) = GetMinIndex(D);
@@ -65,7 +69,11 @@ namespace BioinfAlgorithms.Phylogenetic
                 string nameJ = names[minJ].name;
                 names.RemoveAt(firstRow);
                 names.RemoveAt(secondRow);
-                names.Add(($"({nameI},{nameJ}):{ijVal / 2}", 2));
+                names.Add(($"({nameI}:{ijVal/2 - nodeLengths[minI]},{nameJ}:{ijVal/2-nodeLengths[minJ]})", 2));
+                nodeLengths.RemoveAt(firstRow);
+                nodeLengths.RemoveAt(secondRow);
+                nodeLengths.Add(ijVal/2);
+
             }
             return names.First().name;
 

@@ -15,7 +15,7 @@ namespace BioinfAlgorithms
 
         static void Main(string[] args)
         {
-            var namesTest1 = new string[] { "A", "B", "C", "D" };
+           var namesTest1 = new string[] { "A", "B", "C", "D" };
             var test1 = Matrix<double>.Build.DenseOfArray(
                 new double[,]
                 {
