@@ -1,4 +1,5 @@
-﻿using BioinfAlgorithms.Phylogenetic;
+﻿using BioinfAlgorithms.HMM;
+using BioinfAlgorithms.Phylogenetic;
 using BioinfAlgorithms.Phylogenetics;
 using MathNet.Numerics.LinearAlgebra;
 using System;
@@ -16,76 +17,100 @@ namespace BioinfAlgorithms
 
         static void Main(string[] args)
         {
-           var namesTest1 = new string[] { "A", "B", "C", "D" };
-            var test1 = Matrix<double>.Build.DenseOfArray(
+
+            Dictionary<char, int> indexes = new Dictionary<char, int>()
+            {
+                {'О',0 },
+                {'Р', 1}
+            };
+
+            //Transition matrix
+            var test1A = Matrix<double>.Build.DenseOfArray(
                 new double[,]
                 {
-                    {0, 16, 16, 10 },
-                    {16, 0, 8, 8 },
-                    {16,8, 0, 4 },
-                    {10, 8, 4, 0 }
+                    { 0.8,0.2 },
+                    { 0.8,0.2 }
                 });
 
-            var namesTest2 = new string[] { "A", "B", "C", "D", "E", "F" };
-            var test2 = Matrix<double>.Build.DenseOfArray(
+            //Emission probabilities matrix
+            var test1B = Matrix<double>.Build.DenseOfArray(
                 new double[,]
                 {
-                    {0, 5, 4, 7, 6, 8 },
-                    {5, 0, 7, 10, 9, 11 },
-                    {4, 7, 0, 7, 6, 8 },
-                    {7,10,7,0,5,9 },
-                    {6,9,6,5,0,8},
-                    {8,11,8,9,8,0 }
+                    { 0.5,0.5 },
+                    { 0.1,0.9 }
                 });
 
-           /* var namesWikiTest = new string[] { "A", "B", "C", "D", "E" };
-            var wikiTest = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    { 0, 17,  21,  31,  23},
-                    {17, 0,   30,  34,  21},
-                    { 21,    30,  0,   28,  39},
-                    {31, 34,  28,  0,   43 },
-                    {23, 21,  39,  43,  0 }
-                }
-                );
-
-            var njTest = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    {0,  5,   9,   9,   8 },
-                    {5,  0,   10,  10,  9 },
-                    {9,  10,  0,   8,   7 },
-                    {9,  10,  8,   0,   3 },
-                    {8 , 9,   7,   3,   0 }
-                });
-
-            var njTest2 = Matrix<double>.Build.DenseOfArray(
+            var test2A = Matrix<double>.Build.DenseOfArray(
     new double[,]
     {
-                    {0,5,4,7,6,8 },
-                    {5,0,7,10,9,11 },
-                    {4,7,0,7,6,8 },
-                    {7,10,7,0,5,9 },
-                    {6,9,6,5,0,8 },
-                    {8,11,8,9,8,0 }
-
+                    { 0.5,0.5 },
+                    { 0.5,0.5 }
     });
-    */
+            var test2B = Matrix<double>.Build.DenseOfArray(
+                new double[,]
+                {
+                    { 0.5,0.5 },
+                    { 0.51,0.49 }
+                });
 
 
 
-            var test1NJ = NeighborJoiningClustering.BuildTree(test1, namesTest1);
-            var test2NJ = NeighborJoiningClustering.BuildTree(test2, namesTest2);
 
-            Console.WriteLine("Тест 1:");
-            Console.WriteLine("NJ: "+ test1NJ);
+            var test3A = Matrix<double>.Build.DenseOfArray(
+new double[,]
+{
+                    { 0.3 ,0.3, 0.4 },
+                    { 0.1, 0.45, 0.45 },
+                    {0.2,0.3,0.5 }
+}).Transpose();
+            var test3B = Matrix<double>.Build.DenseOfArray(
+                new double[,]
+                {
+                    { 1, 0 },
+                    { 0.8, 0.2 },
+                    {0.3, 0.7 }
+                });
 
-            Console.WriteLine("");
-            Console.WriteLine("Тест 2:");
-            Console.WriteLine("NJ: " + test2NJ);
-            Console.WriteLine("");
+
+
+            var observations = "ОРОРОРООРРРРРРРРРРОООООООО".Select(x => (double)indexes[x]).ToArray();
+
+            Vector<double> Y = Vector<double>.Build.Dense(observations);
+            Vector<double> Y3 = Vector<double>.Build.Dense(new double[] { 1,1,0,1,0,0,1,0,1,1,0,0,0,1});
+            var test3Pi = Vector<double>.Build.DenseOfArray(new double[] { 0, 0.2, 0.8 });
+
+            
+
+            var testPi = Vector<double>.Build.DenseOfArray(new double[] { 0.5, 0.5 });
+
+            Console.WriteLine("Viterbi:");
+            Console.WriteLine("\r\n");
+            Console.WriteLine("Тест 1: ");
+            ViterbiAlgorithm vb = new ViterbiAlgorithm();
+            Console.WriteLine(vb.Compute(testPi, test1A, test1B, Y));
+            Console.WriteLine("\r\n");
+            Console.WriteLine("Тест 2: ");
+            Console.WriteLine(vb.Compute(testPi, test2A, test2B, Y));
+
+
+
+
+            ForwardBackward fb = new ForwardBackward();
+
+
+            Console.WriteLine("\r\n");
+            Console.WriteLine("Forward-Backward:");
+            Console.WriteLine("\r\n");
+            Console.WriteLine("Тест 1: ");
+
+            Console.WriteLine(fb.Compute(testPi, test1A, test1B, Y).ToMatrixString(26,26));
+            Console.WriteLine("\r\n");
+            Console.WriteLine("Тест 2: ");
+            Console.WriteLine(fb.Compute(testPi, test2A, test2B, Y).ToMatrixString(26, 26));
+
             Console.ReadKey();
+
+            var ms = fb.Compute(testPi, test1A, test1B, Y).ToMatrixString();
 
         }
     }
