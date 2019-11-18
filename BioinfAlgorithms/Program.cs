@@ -29,7 +29,7 @@ namespace BioinfAlgorithms
                 new double[,]
                 {
                     { 0.8,0.2 },
-                    { 0.8,0.2 }
+                    { 0.2,0.8 }
                 });
 
             //Emission probabilities matrix
@@ -54,25 +54,7 @@ namespace BioinfAlgorithms
                 });
 
 
-
-
-            var test3A = Matrix<double>.Build.DenseOfArray(
-new double[,]
-{
-                    { 0.3 ,0.3, 0.4 },
-                    { 0.1, 0.45, 0.45 },
-                    {0.2,0.3,0.5 }
-}).Transpose();
-            var test3B = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    { 1, 0 },
-                    { 0.8, 0.2 },
-                    {0.3, 0.7 }
-                });
-
-
-
+            //ОРОРОРООРРРРРРРРРРОООООООО
             var observations = "ОРОРОРООРРРРРРРРРРОООООООО".Select(x => (double)indexes[x]).ToArray();
 
             Vector<double> Y = Vector<double>.Build.Dense(observations);
@@ -103,10 +85,10 @@ new double[,]
             Console.WriteLine("\r\n");
             Console.WriteLine("Тест 1: ");
 
-            Console.WriteLine(fb.Compute(testPi, test1A, test1B, Y).ToMatrixString(26,26));
+            Console.WriteLine(fb.Compute(testPi, test1A, test1B, Y).Transpose().ToMatrixString(26,26));
             Console.WriteLine("\r\n");
             Console.WriteLine("Тест 2: ");
-            Console.WriteLine(fb.Compute(testPi, test2A, test2B, Y).ToMatrixString(26, 26));
+            Console.WriteLine(fb.Compute(testPi, test2A, test2B, Y).Transpose().ToMatrixString(26, 26));
 
             Console.ReadKey();
 

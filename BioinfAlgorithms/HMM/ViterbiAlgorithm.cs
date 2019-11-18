@@ -35,7 +35,8 @@ namespace BioinfAlgorithms.HMM
                     double prevMax = double.MinValue;
                     for(int k = 0; k<K; k++)
                     {
-                        double val = state[k, t - 1] * A[k, j] * B[j, (int)Y[t]];
+                        double emProb = B[j, (int)Y[t]];
+                        double val = state[k, t - 1] * A[k, j] * emProb;
                         if (val > prevMax)
                         {
                             prevMax = val;
@@ -50,7 +51,7 @@ namespace BioinfAlgorithms.HMM
             int maxI = 0;
             for(int i =0; i<K; i++)
             {
-                if (index[i, T - 1] > index[maxI, T - 1])
+                if (state[i, T - 1] > state[maxI, T - 1])
                     maxI = i;
             }
             X[T - 1] = maxI;

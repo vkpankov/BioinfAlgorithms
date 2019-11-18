@@ -51,7 +51,7 @@ namespace BioinfAlgorithms.HMM
                     double sum = 0;
                     for (int i = 0; i < K; i++)
                     {
-                        sum += beta[i, t + 1] * A[i, j] * B[j, (int)Y[t+1]];
+                        sum += beta[i, t + 1] * A[j, i] * B[i, (int)Y[t+1]];
                     }
                     beta[j, t] = sum;
                 }
@@ -60,18 +60,14 @@ namespace BioinfAlgorithms.HMM
             var lc = alpha.Column(T-1);
 
             Matrix<double> X = Matrix<double>.Build.Dense(K,T);
+            double norm = 0;
+            for (int i = 0; i < K; i++)
+                norm += alpha[i, T-1];
 
             for (int t = 0; t < T; t++)
             {
-                double norm = 0;
-                for (int i = 0; i < K; i++)
-                    norm += alpha[i, t] * beta[i, t];
-
                 for (int j = 0; j < K; j++)
                 {
-
-
-
                     X[j, t] += alpha[j, t] * beta[j, t] / norm;
                 }
             }
